@@ -1,4 +1,5 @@
 ﻿using DAL.Datos;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -37,29 +38,73 @@ namespace DAL
             return Result;
         }
 
-        public Task<bool> DeleteAsync<TEntity>(TEntity toDelete) where TEntity : class
+        public async Task<bool> DeleteAsync <TEntity>(TEntity toDelete) where TEntity : class
         {
-            throw new NotImplementedException();
+            bool Result = false;
+            try
+            {
+                 _context.Entry<TEntity>(toDelete).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
+                Result = await _context.SaveChangesAsync() > 0;
+
+            }
+            catch (DbException)
+            {
+                throw;
+            }
+            return Result;
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if (_context != null)
+            {
+                _context.Dispose();
+            }
         }
 
-        public Task<List<TEntity>> FilterAsync<TEntity>(Expression<Func<TEntity, bool>> Criteria) where TEntity : class
+        public async Task<List<TEntity>> FilterAsync<TEntity>(Expression<Func<TEntity, bool>> Criteria) where TEntity : class
         {
-            throw new NotImplementedException();
+            List<TEntity> Result = default(List<TEntity>);
+            try
+            {
+                return await _context.Set<TEntity>().Where(Criteria).ToListAsync();
+            }
+            catch(DbException)
+            {
+                throw;
+            }
+            return Result.ToList();
+            
         }
 
-        public Task<TEntity> RetrieveAsync<TEntity>(Expression<Func<TEntity, bool>> Criteria) where TEntity : class
+        public async Task<TEntity> RetrieveAsync<TEntity>(Expression<Func<TEntity, bool>> Criteria) where TEntity : class
         {
-            throw new NotImplementedException();
+            
+            TEntity Result = null;
+            try
+            {
+                Result = await _context.Set<TEntity>().FirstOrDefaultAsync(Criteria);
+                       
+             }catch(DbException)
+            {
+                throw;
+            }
+            return Result;
         }
 
-        public Task<bool> UpdateAsync<TEntity>(TEntity toUpdate) where TEntity : class
+        public  async Task<bool> UpdateAsync<TEntity>(TEntity toUpdate) where TEntity : class
         {
-            throw new NotImplementedException();
+            bool Result = false;
+            try
+            {
+                _context.Entry<TEntity>(toUpdate).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                Result = await _context.SaveChangesAsync() > 0;
+            }
+            catch(DbException)
+            {
+                throw;
+            }
+            return Result;
         }
     }
 }
