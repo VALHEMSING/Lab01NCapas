@@ -6,7 +6,8 @@ using System.Linq.Expressions;
 //CreateAsync().GetAwaiter().GetResult();
 //RetreiveAsync().GetAwaiter().GetResult();   
 //UpdateAsync().GetAwaiter().GetResult();
-FilterAsync().GetAwaiter().GetResult();
+//FilterAsync().GetAwaiter().GetResult();
+DeleteAsync().GetAwaiter().GetResult();
 
 Console.ReadLine();
 
@@ -123,6 +124,20 @@ static async Task FilterAsync()
         foreach(var customer in customers)
         {
             Console.WriteLine($"Customer: {customer.FirstName} - {customer.LastName}\nFrom: {customer.City}\n <------------------------------->");
+        }
+    }
+}
+
+static async Task DeleteAsync()
+{
+    using (var repository = RepositoryFactory.CreateRepository())
+    {
+        Expression<Func<Customer, bool>> Criteria = customer => customer.Id == 95;
+        var customerToDelete = await repository.RetrieveAsync(Criteria);
+        if (customerToDelete != null)
+        {
+            bool deleted = await repository.DeleteAsync(customerToDelete);
+            Console.WriteLine(deleted ? "Customer deletd succesfully." : "Failed to delete customer.");
         }
     }
 }
