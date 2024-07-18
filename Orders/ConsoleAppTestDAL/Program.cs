@@ -5,7 +5,8 @@ using System.Linq.Expressions;
 
 //CreateAsync().GetAwaiter().GetResult();
 //RetreiveAsync().GetAwaiter().GetResult();   
-UpdateAsync().GetAwaiter().GetResult();
+//UpdateAsync().GetAwaiter().GetResult();
+FilterAsync().GetAwaiter().GetResult();
 
 Console.ReadLine();
 
@@ -94,7 +95,34 @@ static async Task UpdateAsync()
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
+                /*
+        Expression<Func<Customer, bool>> criteria = c => c.FirstName == "Claudio" && c.LastName == "Cortés";
+        var customer = await repository.RetrieveAsync(criteria);
+        if (customer != null)
+        {
+            customer.City = "Los Angeles";
+            customer.Country = "EEUU";
+            customer.Phone = "+1(213)555-1234";
+            bool updated = await repository.UpdateAsync(customer);
+            Console.WriteLine(updated ? "Customer updated successfully." : "Failed to update customer.");
+        }
+        */
 
     }
 
+}
+
+
+
+static async Task FilterAsync()
+{
+    using (var repository = RepositoryFactory.CreateRepository())
+    {
+        Expression<Func<Customer, bool>> Criteria = c => c.Country == "USA";
+        var customers = await repository.FilterAsync(Criteria);
+        foreach(var customer in customers)
+        {
+            Console.WriteLine($"Customer: {customer.FirstName} - {customer.LastName}\nFrom: {customer.City}\n <------------------------------->");
+        }
+    }
 }
