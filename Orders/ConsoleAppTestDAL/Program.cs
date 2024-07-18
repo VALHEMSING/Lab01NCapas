@@ -1,9 +1,13 @@
 ﻿using DAL;
 using Entities.Models;
+using System.Data.Common;
 using System.Linq.Expressions;
 
-CreateAsync().GetAwaiter().GetResult();
-RetreiveAsync().GetAwaiter().GetResult();   
+//CreateAsync().GetAwaiter().GetResult();
+//RetreiveAsync().GetAwaiter().GetResult();   
+UpdateAsync().GetAwaiter().GetResult();
+
+Console.ReadLine();
 
 static async Task CreateAsync()
 {
@@ -54,4 +58,43 @@ static async Task RetreiveAsync()
     }
 }
     
+static async Task UpdateAsync()
+{
+    //Supuesto: Existe el objeto a modificar
+    //Pre-Requisito --> Que exista el objeto
 
+    //var customerToUpdate = await
+    using (var repository = RepositoryFactory.CreateRepository())
+    {
+
+        //Averiguar si el objeto o registro ¡Existe!!!!
+        var customerToUpdate = await repository.RetrieveAsync<Customer>(c => c.Id == 78);
+        if(customerToUpdate != null)//Si es distinto de NULL, es porque existe
+        {
+            customerToUpdate.FirstName = "Liu";
+            customerToUpdate.LastName = "Wong";
+            customerToUpdate.City = "Toronto";
+            customerToUpdate.Country = "Canada";
+            customerToUpdate.Phone = "+14337 6353039";
+        }
+
+        try
+        {
+            bool update = await repository.UpdateAsync(customerToUpdate);
+            if (update)
+            {
+                Console.WriteLine($"Customer update succesfully...");
+            }
+            else
+            {
+                Console.WriteLine($"Customer update failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+
+    }
+
+}
