@@ -3,6 +3,7 @@ using Entities.Models;
 using System.Linq.Expressions;
 
 CreateAsync().GetAwaiter().GetResult();
+RetreiveAsync().GetAwaiter().GetResult();   
 
 static async Task CreateAsync()
 {
