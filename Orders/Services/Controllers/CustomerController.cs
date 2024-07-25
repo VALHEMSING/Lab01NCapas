@@ -13,7 +13,7 @@ namespace Services.Controllers
     [ApiController]
 
     
-    public class CustomerController : ControllerBase
+    public class CustomerController : ControllerBase, ICustomerService
     {
         /*-------------------------------------------------------------------------------------------------------------------------------*/
         
@@ -26,33 +26,12 @@ namespace Services.Controllers
         {
             _bll = bll;
         }
-
-        /*-------------------------------------------------------------------------------------------------------------------------------*/
-        
-        //Metodo para Obtener todos los Customers
-        public async Task<ActionResult<List<Customer>>> GetResultAsync()
-        {
-            try
-            {
-                var result = await _bll.RetrieveAllAsync();
-                return Ok(result);//Usamos IActionResult for more flexibility (200 OK)
-            }
-            catch (CustomersExecptions ex)//Catch specific business log exceptions
-            {
-                return BadRequest(ex.Message); //Return 400 Bad Request with error message
-            }
-            catch(Exception ex)
-            {
-                //Log the exception
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
-            }
-        }
-        
         /*-------------------------------------------------------------------------------------------------------------------------------*/
 
         /*
          * Metodo para BUSCAR clientes por su ID
          */
+
         public async Task<ActionResult<Customer>> RetrieveAsync(int id)
         {
             try
@@ -69,7 +48,7 @@ namespace Services.Controllers
             {
                 return BadRequest(ce.Message);
             }
-            catch(Exception ex)
+            catch(Exception )
             {
                  return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
             }
@@ -91,7 +70,7 @@ namespace Services.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
             }
@@ -144,10 +123,36 @@ namespace Services.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
             }
         }
+        /*-------------------------------------------------------------------------------------------------------------------------------*/
+
+        //Metodo para Obtener todos los Customers
+
+
+        
+
+
+        public async Task<ActionResult<List<Customer>>> GetAllAsync()
+        {
+            try
+            {
+                var result = await _bll.RetrieveAllAsync();
+                return Ok(result);//Usamos IActionResult for more flexibility (200 OK)
+            }
+            catch (CustomersExecptions ex)//Catch specific business log exceptions
+            {
+                return BadRequest(ex.Message); //Return 400 Bad Request with error message
+            }
+            catch(Exception)
+            {
+                //Log the exception
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+            }
+        }
+        /*-------------------------------------------------------------------------------------------------------------------------------*/
     }
 }
