@@ -102,7 +102,7 @@ namespace BLL
             using (var repository = RepositoryFactory.CreateRepository())
             {
                 //Validar que el nombre no exista
-                Customer customerSearch = await repository.RetrieveAsync<Customer>(c => c.FirstName == c.FirstName && c.Id != customer.Id);
+                Customer customerSearch = await repository.RetrieveAsync<Customer>(c => c.FirstName == customer.FirstName && c.Id != customer.Id);
                 if( customerSearch == null)
                 {
                     //No existe
