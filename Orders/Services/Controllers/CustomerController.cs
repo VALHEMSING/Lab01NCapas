@@ -67,13 +67,13 @@ namespace Services.Controllers
             try
             {
                 var customer = await _bll.CreateAsync(toCreate);
-                return CreatedAtRoute("Retrieve", new { id = customer.Id }, customer);
+                return CreatedAtRoute("RetrieveAsync", new { id = customer.Id }, customer);
             }
             catch (CustomersExecptions ex)
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch (Exception )
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
             }
