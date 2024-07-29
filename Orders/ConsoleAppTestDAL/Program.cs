@@ -96,7 +96,7 @@ static async Task UpdateAsync()
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
-                /*
+                
         Expression<Func<Customer, bool>> criteria = c => c.FirstName == "Claudio" && c.LastName == "Cortés";
         var customer = await repository.RetrieveAsync(criteria);
         if (customer != null)
@@ -107,7 +107,7 @@ static async Task UpdateAsync()
             bool updated = await repository.UpdateAsync(customer);
             Console.WriteLine(updated ? "Customer updated successfully." : "Failed to update customer.");
         }
-        */
+        
 
     }
 
