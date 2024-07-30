@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProxyServer.Interfaces;
-using Entities.Models
+using Entities.Models;
 
 using System.Net.Http.Headers;
-using System.Text.Json;:
+using System.Text.Json;
 
 namespace ProxyServer
 {
@@ -27,8 +27,6 @@ namespace ProxyServer
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
-
-
 
         public async Task<List<Customer>> GetAllAsync()
         {
@@ -101,7 +99,6 @@ namespace ProxyServer
 
         }
         */
-
         public async Task<bool> UpdateAsync (int id, Customer customer)
         {
             try
