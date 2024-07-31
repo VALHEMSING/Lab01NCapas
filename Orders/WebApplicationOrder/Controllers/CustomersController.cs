@@ -17,7 +17,7 @@ namespace WebApplicationOrder.Controllers
         public async Task<IActionResult>Index()
         {
             var customers = await _proxy.GetAllAsync();
-            return View();
+            return View(customers);
         }
     }
 }
