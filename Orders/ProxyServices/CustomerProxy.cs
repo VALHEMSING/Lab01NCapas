@@ -21,30 +21,33 @@ namespace ProxyServer
             //Inicializamos 
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:7045/api/Customer/")//Asegurarse de que conicidad con el servidor
+                BaseAddress = new Uri("https://localhost:7228/api/Customer/")
+                //https://localhost:7045/api/Customer/
+                //https://localhost:7228/swagger/index.html//Asegurarse de que conicidad con el servidor
             };
             //
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        
         }
 
         public async Task<List<Customer>> GetAllAsync()
         {
             try
             {
-                var response = await _httpClient.GetAsync(" ");
+                var response = await _httpClient.GetAsync(""); // Sin espacio
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<List<Customer>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
             }
-            catch (global::System.Exception ex)
+            catch (Exception ex)
             {
+                // Logger could be used here
                 Console.WriteLine($"Error: {ex.Message}");
-                return null;
-
+                return null; // Consider returning an empty list or handling this differently
             }
         }
+
 
         public async Task<Customer> GetByIdAsync(int id)
         {
@@ -99,21 +102,23 @@ namespace ProxyServer
 
         }
         */
-        public async Task<bool> UpdateAsync (int id, Customer customer)
+        public async Task<bool> UpdateAsync(int id, Customer customer)
         {
             try
             {
                 var json = JsonSerializer.Serialize(customer);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PutAsync($"{id} ", content);
+                var response = await _httpClient.PutAsync($"{id}", content);
                 return response.IsSuccessStatusCode;
             }
-            catch (global::System.Exception ex)
+            catch (Exception ex)
             {
+                // Log the error, potentially with more context
+                Console.WriteLine($"Error updating customer {id}: {ex.Message}");
                 throw;
             }
-
         }
+
 
         public async Task<bool> DeleteAsync(int id)
         {

@@ -4,41 +4,39 @@ using ProxyServer;
 
 namespace WebApplicationOrder.Controllers
 {
-    public class CustomersController : Controller
+    public class ProductsController : Controller
     {
-        //campo
-        private readonly CustomerProxy _proxy;
 
-        //Constructor
-        public CustomersController()
+        private readonly ProductsProxy _proxy;
+
+        public ProductsController()
         {
-            this._proxy = new CustomerProxy();
+            this._proxy = new ProductsProxy();
         }
+
 
         public async Task<IActionResult> Index()
         {
-            var customers = await _proxy.GetAllAsync();
-            return View(customers);
+            var products = await _proxy.GetAllAsync();
+            return View(products);
         }
 
-        /*
-         * Create
-        */
         //GET: Customer/Create
         public ActionResult Create()
         {
             return View();
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,City,Country,Phone")] Customer customer)
+        public async Task<IActionResult> Create([Bind("Id,ProductName,SupplierId,UnitPrice,Package,IsDiscontinued")] Product product)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var result = await _proxy.CreateAsync(customer);
+                    var result = await _proxy.CreateAsync(product);
                     if (result == null)
                     {
                         return RedirectToAction("Error", new { message = "El cliente con el mismo nombre y aprellido ya existe." });
@@ -50,29 +48,27 @@ namespace WebApplicationOrder.Controllers
                     return RedirectToAction("Error", new { message = ex.Message });
                 }
             }
-            return View(customer);
+            return View(product);
         }
-
-
 
         // GET: CustomersController/Edit/5
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var customer = await _proxy.GetByIdAsync(id);
-            if (customer == null)
+            var product = await _proxy.GetByIdAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(customer);
+            return View(product);
         }
 
-         // POST: CustomersController/Edit/5
+        // POST: CustomersController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit (int id, [Bind("Id, FirstName, LastName, City, Country, Phone")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ProductName,SupplierId,UnitPrice,Package,IsDiscontinued")] Product product)
         {
-            if(id != customer.Id)
+            if (id != product.Id)
             {
                 return NotFound();
             }
@@ -80,8 +76,8 @@ namespace WebApplicationOrder.Controllers
             {
                 try
                 {
-                    var result = await _proxy.UpdateAsync(id, customer);
-                    if(!result)
+                    var result = await _proxy.UpdateAsync(id, product);
+                    if (!result)
                     {
                         return RedirectToAction("Error", new { message = "No se puede realizar la edición porque hay duplicidad de nombre con otro cliente" });
                     }
@@ -92,11 +88,8 @@ namespace WebApplicationOrder.Controllers
                     return RedirectToAction("Error", new { message = ex.Message });
                 }
             }
-            return View(customer);
+            return View(product);
         }
-
-
-
 
 
         //Details
@@ -104,12 +97,12 @@ namespace WebApplicationOrder.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Detail(int id)
         {
-            var customer = await _proxy.GetByIdAsync(id);
-            if (customer == null)
+            var product = await _proxy.GetByIdAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(customer);
+            return View(product);
         }
 
         //Delete
@@ -117,12 +110,12 @@ namespace WebApplicationOrder.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var customer = await _proxy.GetByIdAsync(id);
-            if (customer == null)
+            var product = await _proxy.GetByIdAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(customer);
+            return View(product);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -139,15 +132,12 @@ namespace WebApplicationOrder.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
-            
+
         }
-
-        
-
         //Error
 
         public IActionResult Error(string message)
@@ -155,28 +145,5 @@ namespace WebApplicationOrder.Controllers
             ViewBag.ErrorMessage = message;
             return View();
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
