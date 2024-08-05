@@ -75,26 +75,26 @@ namespace BLL
 
         /*-------------------------------------------------------------------------------------------------------------------------------*/
         //Tara asincora de llamar al cliente por Id
-        public async Task <Customer> RetrieveByIDAsync(int id)
+        public async Task<Customer> RetrieveByIDAsync(int id)
         {
-            Customer result = null;
             using (var repository = RepositoryFactory.CreateRepository())
             {
                 Customer customer = await repository.RetrieveAsync<Customer>(c => c.Id == id);
-                //Checkeamos si el cliente fue encontrado
+                // Check if the customer was found
                 if (customer == null)
                 {
-                    //Lanzamos una excepcion en caso de no haber encontrado
-                    CustomersExecptions.ThrowInvalidCusrtomerDataException(id);
+                    // Throw an exception if not found
+                    CustomersExecptions.ThrowInvalidCustomerIdException(id);
                 }
 
-                return result;
+                return customer;
             }
         }
 
 
+
         /*-------------------------------------------------------------------------------------------------------------------------------*/
-    
+
         //Tarea asincrona para actualizar o modificar
         public async Task<bool> UpdateAsync(Customer customer)
         {
@@ -126,7 +126,7 @@ namespace BLL
         {
             bool result = false;
             //Buscar un cliente para ver si tiene Orders(Ordenes de compra)
-            var customer = await RetrieveByIDAsync(id);
+            Customer customer = await RetrieveByIDAsync(id);
             if(customer != null)
             {
                 //Eliminar al cliete
@@ -141,7 +141,7 @@ namespace BLL
                  * Podemos implementar alguna logica para
                  * indicar que el producto no existe
                  */
-                CustomersExecptions.ThrowInvalididCustomerIdException(id);
+                CustomersExecptions.ThrowInvalidCustomerIdException(id);
             }
             return result;
         }
