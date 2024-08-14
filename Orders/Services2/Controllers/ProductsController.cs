@@ -19,7 +19,7 @@ namespace Services2.Controllers
         }
 
         [HttpPost]
-        public async  Task<ActionResult<Product>> CreateAsync([FromBody] Product toCreate)
+        public async Task<ActionResult<Product>> CreateAsync([FromBody] Product toCreate)
         {
             try
             {
@@ -30,9 +30,10 @@ namespace Services2.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                // Registrar excepción aquí
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error inesperado.");
             }
         }
 
@@ -44,7 +45,7 @@ namespace Services2.Controllers
                 var result = await _bll.DeleteAsync(id);
                 if (!result)
                 {
-                    return NotFound("Customer not founf or deletion failed.");
+                    return NotFound("Producto no encontrado o la eliminación falló.");
                 }
                 return NoContent();
             }
@@ -52,11 +53,13 @@ namespace Services2.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                // Registrar excepción aquí
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error inesperado.");
             }
         }
+
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetAllAsync()
         {
@@ -65,14 +68,14 @@ namespace Services2.Controllers
                 var result = await _bll.RetrieveAllAsync();
                 return Ok(result);
             }
-            catch (ProductsExceptions ex)//Catch specific business log exceptions
+            catch (ProductsExceptions ex)
             {
-                return BadRequest(ex.Message); //Return 400 Bad Request with error message
+                return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //Log the exception
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                // Registrar excepción aquí
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error inesperado.");
             }
         }
 
@@ -85,17 +88,18 @@ namespace Services2.Controllers
 
                 if (product == null)
                 {
-                    return NotFound("Customer not fuond.");
+                    return NotFound("Producto no encontrado.");
                 }
                 return Ok(product);
             }
-            catch (ProductsExceptions ce)
+            catch (ProductsExceptions ex)
             {
-                return BadRequest(ce.Message);
+                return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                // Registrar excepción aquí
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error inesperado.");
             }
         }
 
@@ -104,12 +108,12 @@ namespace Services2.Controllers
         {
             if (toUpdate == null)
             {
-                return BadRequest("Customer data is null.");
+                return BadRequest("Los datos del producto son nulos.");
             }
 
             if (id != toUpdate.Id)
             {
-                return BadRequest("Mismatched customer ID.");
+                return BadRequest("ID de producto no coincide.");
             }
 
             try
@@ -117,7 +121,7 @@ namespace Services2.Controllers
                 var result = await _bll.UpdateAsync(toUpdate);
                 if (!result)
                 {
-                    return NotFound("Customer not found or update failed.");
+                    return NotFound("Producto no encontrado o la actualización falló.");
                 }
                 return NoContent();
             }
@@ -125,10 +129,12 @@ namespace Services2.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+                // Registrar excepción aquí
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrió un error inesperado.");
             }
         }
     }
+}
 }

@@ -21,7 +21,7 @@ namespace ProxyServer
             //Inicializamos 
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:7228/api/Customer/")
+                BaseAddress = new Uri("https://localhost:7045/api/Customer/")
                 //https://localhost:7045/api/Customer/
                 //https://localhost:7228/swagger/index.html//Asegurarse de que conicidad con el servidor
             };
