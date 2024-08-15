@@ -34,6 +34,9 @@ public partial class ApplicationDbContext : DbContext
     //New: BOGDFPCSRFOD124\\TEW_SQLEXPRESS
     //("Server=BOGDFPCSRFOD124\\TEW_SQLEXPRESS;Database=ORDERS;User ID=SA;Password=MsSQL2024$?; Trust Server Certificate=True;");
 
+
+    //Scaffold-DbContext "Server=DESKTOP-DADP12Q\SQLEXPRESS;Database=ORDERS;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -UseDatabaseNames -DataAnnotations -Context ApplicationDbContext -ContextDir Datos -OutputDir Models
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Customer>(entity =>
