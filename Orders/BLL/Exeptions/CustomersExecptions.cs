@@ -21,12 +21,12 @@ namespace BLL.Exeptions
             throw new CustomersExecptions($"A client with the name already exist {firstName} {lastName}");
         }
         /*-------------------------------------------------------------------------------------------------------------------------------*/
-        public static void ThrowInvalidCusrtomerDataException(int id)
+        public static void ThrowInvalidCustomerDataException(string message)
         {
-            throw new CustomersExecptions($"El ID del cliente '{id}' no es válido.");
+            throw new CustomersExecptions(message);
         }
         /*-------------------------------------------------------------------------------------------------------------------------------*/
-        public static void ThrowInvalididCustomerIdException(int id)
+        public static void ThrowInvalidCustomerIdException(int id)
         {
             throw new CustomersExecptions($"El ID del cliente '{id}' no es válido.\"");
         }
