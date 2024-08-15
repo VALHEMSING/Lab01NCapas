@@ -21,7 +21,7 @@ namespace ProxyServer
             //Inicializamos 
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:7228/api/Customer/")
+                BaseAddress = new Uri("https://localhost:7045/api/Products/")
                 //https://localhost:7045/api/Customer/
                 //https://localhost:7228/swagger/index.html//Asegurarse de que conicidad con el servidor
             };
@@ -36,7 +36,9 @@ namespace ProxyServer
             {
                 var json = JsonSerializer.Serialize(product);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(" ", content);
+                var response = await _httpClient.PostAsync("", content);
+
+
                 response.EnsureSuccessStatusCode();
                 var responseJson = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<Product>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -78,6 +80,24 @@ namespace ProxyServer
                 return null; // Consider returning an empty list or handling this differently
             }
         }
+
+        /*
+         * public async Task<List<Product>> GetAllAsync()
+{
+    try
+    {
+        var response = await _httpClient.GetAsync("");
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<List<Product>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<Product>();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+        return new List<Product>(); // Devuelve una lista vacía
+    }
+}
+         */
 
         public async Task<Product> GetByIdAsync(int id)
         {

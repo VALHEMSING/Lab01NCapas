@@ -13,14 +13,15 @@ namespace ProxyServer
 {
     public class SuppliersProxy : ISuppliersProxy
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient; 
+
 
         public SuppliersProxy()
         {
              
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:7228/api/Customer/")
+                BaseAddress = new Uri("https://localhost:7045/api/Supplier/")
                 //https://localhost:7045/api/Customer/
                 //https://localhost:7228/swagger/index.html//Asegurarse de que conicidad con el servidor
             };
@@ -36,7 +37,7 @@ namespace ProxyServer
             {
                 var json = JsonSerializer.Serialize(supplier);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(" ", content);
+                var response = await _httpClient.PostAsync("", content);
                 response.EnsureSuccessStatusCode();
                 var responseJson = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<Supplier>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -69,12 +70,12 @@ namespace ProxyServer
                 var response = await _httpClient.GetAsync("");
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Supplier>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return JsonSerializer.Deserialize<List<Supplier>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<Supplier>();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                return null;
+                return new List<Supplier>(); // Devuelve una lista vacía
             }
         }
 
