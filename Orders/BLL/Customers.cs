@@ -13,44 +13,44 @@ namespace BLL
     public class Customers
     {
         /*-------------------------------------------------------------------------------------------------------------------------------*/
-        
-        //Tarea asincrona para crear al cliente si no existe y validacion
+
         public async Task<Customer> CreateAsync(Customer customer)
         {
             Customer customerResult = null;
             using (var repository = RepositoryFactory.CreateRepository())
             {
-                //Buscar si el nombre del cliente existe
-                Customer customerSearch = await repository.RetrieveAsync<Customer>(c => c.FirstName == customer.FirstName);
-                if(customerSearch == null)
+                // Buscar si el nombre del cliente existe
+                Customer customerSearch = await repository.RetrieveAsync<Customer>(c => c.FirstName == customer.FirstName && c.LastName == customer.LastName);
+
+                if (customerSearch == null)
                 {
-                    //No existe, podemos crearlo
+                    // Validación adicional antes de crear el cliente
+                    if (string.IsNullOrWhiteSpace(customer.FirstName) || string.IsNullOrWhiteSpace(customer.LastName))
+                    {
+                        throw new CustomersExecptions("El nombre y el apellido del cliente son obligatorios.");
+                    }
+
+                    // No existe, podemos crearlo
                     customerResult = await repository.CreateAsync(customer);
                 }
                 else
                 {
-                    /*
-                     * Podriamos lanzar una excepcion
-                     * para modificar que el cliente ya existe.
-                     * podriamos incluso crear una capa de Excepciones
-                     * personalizada y consumirla desde otras capas.
-                    */
-                    CustomersExecptions.ThrowCustomerAlreadyExistException(customerSearch.FirstName, customerSearch.LastName);
+                    // Lanzar excepción si el cliente ya existe
+                    CustomersExecptions.ThrowCustomerAlreadyExistException(customer.FirstName, customer.LastName);
                 }
-                
             }
-            // Verificar si customerResult sigue siendo nulo y lanzar una excepción en caso afirmativo
+
             if (customerResult == null)
             {
                 throw new InvalidOperationException("El cliente no pudo ser creado.");
             }
-            return customerResult;
 
-            
+            return customerResult;
         }
 
+
         /*-------------------------------------------------------------------------------------------------------------------------------*/
-        
+
         //Tarea asincrona para obtener todos los clientes
         public async Task<List<Customer>> RetrieveAllAsync()
         {

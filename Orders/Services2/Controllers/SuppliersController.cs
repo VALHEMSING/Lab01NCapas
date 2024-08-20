@@ -15,9 +15,8 @@ namespace Services2.Controllers
 
         public SuppliersController(Suppliers bll)
         {
-            _bll = bll;
+            _bll =  bll; // Asigna el servicio inyectado a la variable de instancia
         }
-
 
         [HttpPost]
         public async Task<ActionResult<Supplier>> CreateAsync([FromBody] Supplier toCreate)
@@ -33,10 +32,9 @@ namespace Services2.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
@@ -46,7 +44,7 @@ namespace Services2.Controllers
                 var result = await _bll.DeleteAsync(id);
                 if (!result)
                 {
-                    return NotFound("Customer not founf or deletion failed.");
+                    return NotFound("Customer not found or deletion failed.");
                 }
                 return NoContent();
             }
@@ -56,7 +54,7 @@ namespace Services2.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
 
@@ -66,38 +64,37 @@ namespace Services2.Controllers
             try
             {
                 var result = await _bll.RetrieveAllAsync();
-                return Ok(result);//Usamos IActionResult for more flexibility (200 OK)
+                return Ok(result);
             }
-            catch (SuppliersExceptions ex)//Catch specific business log exceptions
+            catch (SuppliersExceptions ex)
             {
-                return BadRequest(ex.Message); //Return 400 Bad Request with error message
+                return BadRequest(ex.Message);
             }
             catch (Exception)
             {
-                //Log the exception
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
+
         [HttpGet("{id}", Name = "RetrieveSuppliersAsync")]
         public async Task<ActionResult<Supplier>> RetrieveAsync(int id)
         {
             try
             {
-                Supplier supplier = await _bll.RetrieveByIdAsync(id);
-
+                var supplier = await _bll.RetrieveByIdAsync(id);
                 if (supplier == null)
                 {
-                    return NotFound("Customer not fuond.");
+                    return NotFound("Customer not found.");
                 }
                 return Ok(supplier);
             }
-            catch (CustomersExecptions ce)
+            catch (SuppliersExceptions ex)
             {
-                return BadRequest(ce.Message);
+                return BadRequest(ex.Message);
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
 
@@ -123,7 +120,7 @@ namespace Services2.Controllers
                 }
                 return NoContent();
             }
-            catch (CustomersExecptions ex)
+            catch (SuppliersExceptions ex)
             {
                 return BadRequest(ex.Message);
             }

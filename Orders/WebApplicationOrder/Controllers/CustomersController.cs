@@ -6,7 +6,7 @@ namespace WebApplicationOrder.Controllers
 {
     public class CustomersController : Controller
     {
-        //campo
+        //campo DI
         private readonly CustomerProxy _proxy;
 
         //Constructor
@@ -34,8 +34,7 @@ namespace WebApplicationOrder.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,City,Country,Phone")] Customer customer)
         {
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     var result = await _proxy.CreateAsync(customer);
@@ -49,8 +48,8 @@ namespace WebApplicationOrder.Controllers
                 {
                     return RedirectToAction("Error", new { message = ex.Message });
                 }
-            }
-            return View(customer);
+            
+            //return View(customer);
         }
 
 
@@ -76,8 +75,7 @@ namespace WebApplicationOrder.Controllers
             {
                 return NotFound();
             }
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     var result = await _proxy.UpdateAsync(id, customer);
@@ -91,7 +89,7 @@ namespace WebApplicationOrder.Controllers
                 {
                     return RedirectToAction("Error", new { message = ex.Message });
                 }
-            }
+            
             return View(customer);
         }
 
@@ -99,10 +97,8 @@ namespace WebApplicationOrder.Controllers
 
 
 
-        //Details
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Detail(int id)
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
         {
             var customer = await _proxy.GetByIdAsync(id);
             if (customer == null)
@@ -155,28 +151,6 @@ namespace WebApplicationOrder.Controllers
             ViewBag.ErrorMessage = message;
             return View();
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 }

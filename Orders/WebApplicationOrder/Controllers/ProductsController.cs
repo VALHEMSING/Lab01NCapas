@@ -1,4 +1,5 @@
-﻿using Entities.Models;
+﻿using BLL;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using ProxyServer;
 
@@ -6,7 +7,6 @@ namespace WebApplicationOrder.Controllers
 {
     public class ProductsController : Controller
     {
-
         private readonly ProductsProxy _proxy;
 
         public ProductsController()
@@ -14,23 +14,20 @@ namespace WebApplicationOrder.Controllers
             this._proxy = new ProductsProxy();
         }
 
-
         public async Task<IActionResult> Index()
         {
             var products = await _proxy.GetAllAsync();
             return View(products);
         }
 
-        //GET: Customer/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
             return View();
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ProductName,SupplierId,UnitPrice,Package,IsDiscontinued")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductName,SupplierId,UnitPrice,Package,IsDiscontinued")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -39,7 +36,7 @@ namespace WebApplicationOrder.Controllers
                     var result = await _proxy.CreateAsync(product);
                     if (result == null)
                     {
-                        return RedirectToAction("Error", new { message = "El cliente con el mismo nombre y aprellido ya existe." });
+                        return RedirectToAction("Error", new { message = "El producto ya existe." });
                     }
                     return RedirectToAction(nameof(Index));
                 }
@@ -51,7 +48,6 @@ namespace WebApplicationOrder.Controllers
             return View(product);
         }
 
-        // GET: CustomersController/Edit/5
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -63,7 +59,6 @@ namespace WebApplicationOrder.Controllers
             return View(product);
         }
 
-        // POST: CustomersController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,ProductName,SupplierId,UnitPrice,Package,IsDiscontinued")] Product product)
@@ -72,6 +67,7 @@ namespace WebApplicationOrder.Controllers
             {
                 return NotFound();
             }
+
             if (ModelState.IsValid)
             {
                 try
@@ -79,7 +75,7 @@ namespace WebApplicationOrder.Controllers
                     var result = await _proxy.UpdateAsync(id, product);
                     if (!result)
                     {
-                        return RedirectToAction("Error", new { message = "No se puede realizar la edición porque hay duplicidad de nombre con otro cliente" });
+                        return RedirectToAction("Error", new { message = "No se puede realizar la edición porque hay duplicidad de nombre con otro producto." });
                     }
                     return RedirectToAction(nameof(Index));
                 }
@@ -91,10 +87,7 @@ namespace WebApplicationOrder.Controllers
             return View(product);
         }
 
-
-        //Details
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
             var product = await _proxy.GetByIdAsync(id);
@@ -105,9 +98,7 @@ namespace WebApplicationOrder.Controllers
             return View(product);
         }
 
-        //Delete
-
-
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _proxy.GetByIdAsync(id);
@@ -122,23 +113,20 @@ namespace WebApplicationOrder.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-
             try
             {
                 var result = await _proxy.DeleteAsync(id);
                 if (!result)
                 {
-                    return RedirectToAction("Error", new { message = "No se puede eliminar el cliente porque tiene facturas asociadas." });
+                    return RedirectToAction("Error", new { message = "No se puede eliminar el producto porque tiene facturas asociadas." });
                 }
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                throw;
+                return RedirectToAction("Error", new { message = ex.Message });
             }
-
         }
-        //Error
 
         public IActionResult Error(string message)
         {

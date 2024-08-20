@@ -11,7 +11,7 @@ namespace BLL.Exeptions
         /// Agregar mas metodos estaticos
         
         //Constructor
-        private CustomersExecptions(string message) : base(message)
+        public CustomersExecptions(string message) : base(message)
         {
             //Opcional: agregar constructo logico para logueo o manejo de errores del cliente
         }

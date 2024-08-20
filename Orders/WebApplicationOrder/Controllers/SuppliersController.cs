@@ -10,7 +10,7 @@ namespace WebApplicationOrder.Controllers
 
         public SuppliersController()
         {
-            this._proxy = new SuppliersProxy();
+            this._proxy =  new SuppliersProxy();
         }
 
 
@@ -30,8 +30,7 @@ namespace WebApplicationOrder.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CompanyName,ContactName,ContactTitle,City,Country,Phone,Fax")] Supplier supplier)
         {
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     var result = await _proxy.CreateAsync(supplier);
@@ -45,8 +44,8 @@ namespace WebApplicationOrder.Controllers
                 {
                     return RedirectToAction("Error", new { message = ex.Message });
                 }
-            }
-            return View(supplier);
+            
+            //return View(supplier);
         }
 
         // GET: CustomersController/Edit/5
@@ -71,8 +70,7 @@ namespace WebApplicationOrder.Controllers
             {
                 return NotFound();
             }
-            if (ModelState.IsValid)
-            {
+           
                 try
                 {
                     var result = await _proxy.UpdateAsync(id, supplier);
@@ -86,7 +84,7 @@ namespace WebApplicationOrder.Controllers
                 {
                     return RedirectToAction("Error", new { message = ex.Message });
                 }
-            }
+            
             return View(supplier);
         }
         //Details

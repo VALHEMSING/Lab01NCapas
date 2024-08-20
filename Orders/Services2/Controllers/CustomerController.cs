@@ -1,9 +1,12 @@
-﻿using BLL.Exeptions;
-using BLL;
+﻿using BLL;
+using BLL.Exeptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SLC;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Services2.Controllers
 {
@@ -11,18 +14,12 @@ namespace Services2.Controllers
     [ApiController]
     public class CustomerController : ControllerBase, ICustomerService
     {
-        /*-------------------------------------------------------------------------------------------------------------------------------*/
+        private readonly Customers _bll;
 
-        private readonly Customers _bll;//Inyeccion de dependencia
-
-        /*-------------------------------------------------------------------------------------------------------------------------------*/
-        //Contructor del controlador
         public CustomerController(Customers bll)
         {
-                _bll = bll;
+            _bll = bll;
         }
-        
-
 
         [HttpPost]
         public async Task<ActionResult<Customer>> CreateAsync([FromBody] Customer toCreate)
@@ -38,12 +35,10 @@ namespace Services2.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
 
-
-        //Delete: api/<CustomerController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
@@ -52,7 +47,7 @@ namespace Services2.Controllers
                 var result = await _bll.DeleteAsync(id);
                 if (!result)
                 {
-                    return NotFound("Customer not founf or deletion failed.");
+                    return NotFound("Customer not found or deletion failed.");
                 }
                 return NoContent();
             }
@@ -62,37 +57,38 @@ namespace Services2.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
+
         [HttpGet]
         public async Task<ActionResult<List<Customer>>> GetAllAsync()
         {
             try
             {
                 var result = await _bll.RetrieveAllAsync();
-                return Ok(result);//Usamos IActionResult for more flexibility (200 OK)
+                return Ok(result);
             }
-            catch (CustomersExecptions ex)//Catch specific business log exceptions
+            catch (CustomersExecptions ex)
             {
-                return BadRequest(ex.Message); //Return 400 Bad Request with error message
+                return BadRequest(ex.Message);
             }
             catch (Exception)
             {
-                //Log the exception
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
+
         [HttpGet("{id}", Name = "RetrieveCustomersAsync")]
         public async Task<ActionResult<Customer>> RetrieveAsync(int id)
         {
             try
             {
-                Customer customer = await _bll.RetrieveByIDAsync(id);
+                var customer = await _bll.RetrieveByIDAsync(id);
 
                 if (customer == null)
                 {
-                    return NotFound("Customer not fuond.");
+                    return NotFound("Customer not found.");
                 }
                 return Ok(customer);
             }
@@ -102,7 +98,7 @@ namespace Services2.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
 
@@ -137,6 +133,5 @@ namespace Services2.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
             }
         }
-
     }
 }

@@ -4,6 +4,8 @@ using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SLC;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Services2.Controllers
 {
@@ -19,8 +21,10 @@ namespace Services2.Controllers
         }
 
         [HttpPost]
-        public async  Task<ActionResult<Product>> CreateAsync([FromBody] Product toCreate)
+        public async Task<ActionResult<Product>> CreateAsync([FromBody] Product toCreate)
         {
+        
+
             try
             {
                 var product = await _bll.CreateAsync(toCreate);
@@ -32,7 +36,7 @@ namespace Services2.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
 
@@ -44,7 +48,7 @@ namespace Services2.Controllers
                 var result = await _bll.DeleteAsync(id);
                 if (!result)
                 {
-                    return NotFound("Customer not founf or deletion failed.");
+                    return NotFound("Product not found or deletion failed.");
                 }
                 return NoContent();
             }
@@ -54,9 +58,10 @@ namespace Services2.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
+
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetAllAsync()
         {
@@ -65,14 +70,13 @@ namespace Services2.Controllers
                 var result = await _bll.RetrieveAllAsync();
                 return Ok(result);
             }
-            catch (ProductsExceptions ex)//Catch specific business log exceptions
+            catch (ProductsExceptions ex)
             {
-                return BadRequest(ex.Message); //Return 400 Bad Request with error message
+                return BadRequest(ex.Message);
             }
             catch (Exception)
             {
-                //Log the exception
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
 
@@ -85,17 +89,17 @@ namespace Services2.Controllers
 
                 if (product == null)
                 {
-                    return NotFound("Customer not fuond.");
+                    return NotFound("Product not found.");
                 }
                 return Ok(product);
             }
-            catch (ProductsExceptions ce)
+            catch (ProductsExceptions ex)
             {
-                return BadRequest(ce.Message);
+                return BadRequest(ex.Message);
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error ocurred");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
 
@@ -104,12 +108,12 @@ namespace Services2.Controllers
         {
             if (toUpdate == null)
             {
-                return BadRequest("Customer data is null.");
+                return BadRequest("Product data is null.");
             }
 
             if (id != toUpdate.Id)
             {
-                return BadRequest("Mismatched customer ID.");
+                return BadRequest("Mismatched product ID.");
             }
 
             try
@@ -117,7 +121,7 @@ namespace Services2.Controllers
                 var result = await _bll.UpdateAsync(toUpdate);
                 if (!result)
                 {
-                    return NotFound("Customer not found or update failed.");
+                    return NotFound("Product not found or update failed.");
                 }
                 return NoContent();
             }

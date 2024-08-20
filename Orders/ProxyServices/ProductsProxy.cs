@@ -2,7 +2,6 @@
 using ProxyServer.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -13,35 +12,32 @@ namespace ProxyServer
 {
     public class ProductsProxy : IProductsProxy
     {
-
         private readonly HttpClient _httpClient;
 
-         public ProductsProxy()
+        // Modify the constructor to accept HttpClient as a parameter
+        public ProductsProxy()
         {
-            //Inicializamos 
-            _httpClient = new HttpClient
-            {
-                BaseAddress = new Uri("https://localhost:7228/api/Customer/")
-                //https://localhost:7045/api/Customer/
-                //https://localhost:7228/swagger/index.html//Asegurarse de que conicidad con el servidor
+            _httpClient = new HttpClient 
+            { 
+                BaseAddress = new Uri("https://localhost:7228/api/Product/")
             };
-            //
+           
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
         }
+
         public async Task<Product> CreateAsync(Product product)
         {
             try
             {
                 var json = JsonSerializer.Serialize(product);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(" ", content);
+                var response = await _httpClient.PostAsync("", content);
                 response.EnsureSuccessStatusCode();
                 var responseJson = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<Product>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
-            catch (global::System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return null;
@@ -55,7 +51,7 @@ namespace ProxyServer
                 var response = await _httpClient.DeleteAsync($"{id}");
                 return response.IsSuccessStatusCode;
             }
-            catch (global::System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return false;
@@ -66,14 +62,13 @@ namespace ProxyServer
         {
             try
             {
-                var response = await _httpClient.GetAsync(""); // Sin espacio
+                var response = await _httpClient.GetAsync(""); // No space
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<List<Product>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
             catch (Exception ex)
             {
-                // Logger could be used here
                 Console.WriteLine($"Error: {ex.Message}");
                 return null; // Consider returning an empty list or handling this differently
             }
@@ -88,7 +83,7 @@ namespace ProxyServer
                 var json = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<Product>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
-            catch (global::System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return null;
@@ -106,8 +101,7 @@ namespace ProxyServer
             }
             catch (Exception ex)
             {
-                // Log the error, potentially with more context
-                Console.WriteLine($"Error updating customer {id}: {ex.Message}");
+                Console.WriteLine($"Error updating product {id}: {ex.Message}");
                 throw;
             }
         }

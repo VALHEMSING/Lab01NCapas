@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    public class RepositoryFactory
+    public static class RepositoryFactory
     {
         public static IRepository CreateRepository()
         {

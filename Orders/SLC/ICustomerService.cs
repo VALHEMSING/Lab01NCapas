@@ -1,10 +1,7 @@
-﻿using System;
-using Entities.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SLC
 {
@@ -15,7 +12,6 @@ namespace SLC
         Task<ActionResult<List<Customer>>> GetAllAsync();
         Task<ActionResult<Customer>> RetrieveAsync(int id);
         Task<IActionResult> UpdateAsync(int id, [FromBody] Customer toUpdate);
-
-        
     }
 }
+

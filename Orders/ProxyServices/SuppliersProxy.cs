@@ -2,12 +2,11 @@
 using ProxyServer.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace ProxyServer
 {
@@ -15,36 +14,34 @@ namespace ProxyServer
     {
         private readonly HttpClient _httpClient;
 
-        public SuppliersProxy()
+        public SuppliersProxy() // Asegúrate de que el constructor reciba HttpClient
         {
-             
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:7228/api/Customer/")
-                //https://localhost:7045/api/Customer/
-                //https://localhost:7228/swagger/index.html//Asegurarse de que conicidad con el servidor
+                BaseAddress = new Uri("https://localhost:7228/api/Supplier/")
             };
-         
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-
         }
+
         public async Task<Supplier> CreateAsync(Supplier supplier)
         {
             try
             {
                 var json = JsonSerializer.Serialize(supplier);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(" ", content);
+                var response = await _httpClient.PostAsync("", content);
                 response.EnsureSuccessStatusCode();
                 var responseJson = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<Supplier>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+           
+               return JsonSerializer.Deserialize<Supplier>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+               
             }
-            catch (global::System.Exception ex)
+            catch (Exception ex)
             {
+                // Aquí podrías registrar el error
                 Console.WriteLine($"Error: {ex.Message}");
-                return null;
+                return null; // Vuelve a lanzar la excepción para que sea manejada en otro lugar
             }
         }
 
@@ -55,7 +52,7 @@ namespace ProxyServer
                 var response = await _httpClient.DeleteAsync($"{id}");
                 return response.IsSuccessStatusCode;
             }
-            catch (global::System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return false;
@@ -67,9 +64,11 @@ namespace ProxyServer
             try
             {
                 var response = await _httpClient.GetAsync("");
-                response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();              
                 var json = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<List<Supplier>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
+               
             }
             catch (Exception ex)
             {
@@ -86,8 +85,10 @@ namespace ProxyServer
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<Supplier>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
+               
             }
-            catch (global::System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return null;
@@ -105,8 +106,7 @@ namespace ProxyServer
             }
             catch (Exception ex)
             {
-                // Log the error, potentially with more context
-                Console.WriteLine($"Error updating customer {id}: {ex.Message}");
+                Console.WriteLine($"Error updating supplier {id}: {ex.Message}");
                 throw;
             }
         }
